@@ -13,7 +13,12 @@ module.exports = {
     // console.log(interaction.member.roles.cache.map((role) => role.name));
     // await wait(1_000);
 
-    if (!interaction.member.roles.cache.some((role) => role.name === "畜長")) {
+    if (
+      !(
+        interaction.member.id === interaction.guild.ownerId ||
+        interaction.member.roles.cache.some((role) => role.name === "畜長")
+      )
+    ) {
       await interaction.reply({
         content: `You don't have permission to use this command.`,
         ephemeral: true,
