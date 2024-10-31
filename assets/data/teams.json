@@ -1,0 +1,52 @@
+{
+  "teams": [
+    {
+      "name": "A88優格大使團",
+      "en_name": "Team 1",
+      "seed": 1,
+      "lineup": []
+    },
+    {
+      "name": "霸道海總&7隻狼狗",
+      "en_name": "Team 2",
+      "seed": 2,
+      "lineup": []
+    },
+    {
+      "name": "喵寶HK粉絲團",
+      "en_name": "Team 3",
+      "seed": 3,
+      "lineup": []
+    },
+    {
+      "name": "白湯匙隊",
+      "en_name": "Team 4",
+      "seed": 4,
+      "lineup": []
+    },
+    {
+      "name": "雷茲與他七個爸爸",
+      "en_name": "Team 5",
+      "seed": 5,
+      "lineup": []
+    },
+    {
+      "name": "我們之中有個內鬼",
+      "en_name": "Team 6",
+      "seed": 6,
+      "lineup": []
+    },
+    {
+      "name": "薯泥薯餅薯條",
+      "en_name": "Team 7",
+      "seed": 7,
+      "lineup": []
+    },
+    {
+      "name": "巴巴菇寶",
+      "en_name": "Team 8",
+      "seed": 8,
+      "lineup": []
+    }
+  ]
+}

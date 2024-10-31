@@ -19,6 +19,8 @@ for (const folder of commandFolders) {
     const filePath = path.join(commandsPath, file);
     const command = require(filePath);
     if ("data" in command && "execute" in command) {
+      if (command.disable) continue;
+
       commands.push(command.data.toJSON());
     } else {
       console.log(
@@ -35,7 +37,11 @@ const rest = new REST().setToken(token);
 (async () => {
   try {
     console.log(
-      `Started refreshing ${commands.length} application (/) commands.`
+      `
+Started refreshing ${commands.length} application (/) commands.
+Those commands are:
+${commands.map((command) => command.name).join("\n")}
+      `
     );
 
     // The put method is used to fully refresh all commands in the guild with the current set
