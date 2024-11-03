@@ -80,8 +80,27 @@ module.exports = {
           );
         }
 
-        const matchEmbed = new EmbedBuilder()
-          .setTitle(`Match: ${match.matchId}`)
+        const matchEmbed = new EmbedBuilder().setTitle(
+          `Match: ${match.matchId}`
+        );
+
+        if (match.finished !== null && match.finished > match.started) {
+          matchEmbed.setColor("GREEN").setDescription(
+            `Started: \t${new Date(match.started).toLocaleString("zh", {
+              hour12: false,
+            })}\nFinished: \t${new Date(match.finished).toLocaleString("zh", {
+              hour12: false,
+            })}`
+          );
+        } else {
+          matchEmbed.setColor("RED").setDescription(
+            `Started: \t${new Date(match.started).toLocaleString("zh", {
+              hour12: false,
+            })}\nFinished: \tNot finished yet`
+          );
+        }
+
+        matchEmbed
           .setDescription(
             `Started: \t${new Date(match.started).toLocaleString("zh", {
               hour12: false,
@@ -93,20 +112,43 @@ module.exports = {
           .addFields({ name: "Map", value: match.mapName })
           .setThumbnail(match.mapImageUrl);
 
+        const colorEmojiMap = {
+          // :color1:  <:color1:1283023694293106698>
+          // :color2: <:color2:1283023692728766535>
+          // :color3: <:color3:1283023690744729724>
+          // :color4: <:color4:1283023688446246943>
+          // :color5: <:color5:1283023686600888341>
+          // :color6: <:color6:1283023684587753575>
+          // :color7: <:color7:1283023682964295711>
+          // :color8: <:color8:1283023680573538369>
+          1: "<:color1:1283023694293106698>",
+          2: "<:color2:1283023692728766535>",
+          3: "<:color3:1283023690744729724>",
+          4: "<:color4:1283023688446246943>",
+          5: "<:color5:1283023686600888341>",
+          6: "<:color6:1283023684587753575>",
+          7: "<:color7:1283023682964295711>",
+          8: "<:color8:1283023680573538369>",
+        };
+
         match.teams.forEach(({ teamId, players }) => {
           matchEmbed.addFields({
             name: `Team ${teamId}`,
             value: players
               .map(
                 ({ name, civName, color, won }) =>
-                  `${won ? "👑" : ""} :color${color}: ${name} (${civName})`
+                  `${won ? "👑" : ""} ${
+                    colorEmojiMap[color]
+                  } ${name} (${civName})`
               )
               .join("\n"),
           });
         });
+        const plaintext = JSON.stringify(match, null, 2);
+        const embedPlaintext = new EmbedBuilder().setDescription(plaintext);
         return interaction.reply({
-          embeds: [matchEmbed],
-          // ephemeral: true,
+          embeds: [matchEmbed, embedPlaintext],
+          ephemeral: true,
         });
       case "team":
         const team = await getTeam(teamName);
