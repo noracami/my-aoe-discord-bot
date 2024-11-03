@@ -122,7 +122,7 @@ module.exports = {
             const matches =
               s.matches.length === 0
                 ? "To be determined"
-                : s.matches.map((m) => `matchId: ${m.matchId}`).join("\n");
+                : s.matches.map((m) => `matchId: ${m}`).join("\n");
             seriesEmbed.addFields({
               name: s.seriesType,
               value: `Roster:\n${roster}\nmatches:\n${matches}`,
