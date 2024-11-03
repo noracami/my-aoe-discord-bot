@@ -8,7 +8,7 @@ const data = new SlashCommandBuilder()
   .setDescription("To create something")
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("setUpMatchOfSeries")
+      .setName("set_up_match_of_series")
       .setDescription("填寫系列賽的比賽資訊")
       .addStringOption((option) =>
         option
@@ -65,7 +65,7 @@ module.exports = {
     const matchNumber = interaction.options.getString("match_number");
     const matchId = interaction.options.getString("match_id");
     switch (interaction.options.getSubcommand()) {
-      case "setUpMatchOfSeries":
+      case "set_up_match_of_series":
         const result = await putSeries(
           teamName,
           team2Name,
