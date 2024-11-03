@@ -97,7 +97,7 @@ module.exports = {
         );
         const started = new Date(
           new Date(match.started).getTime()
-        ).toLocaleDateString("en-US", {
+        ).toLocaleTimeString("zh", {
           timeZone: "Asia/Taipei",
           hour12: false,
         });
@@ -107,7 +107,7 @@ module.exports = {
         if (match.finished !== null && match.finished > match.started) {
           finished = new Date(
             new Date(match.finished).getTime()
-          ).toLocaleDateString("en-US", {
+          ).toLocaleTimeString("zh", {
             hour12: false,
             timeZone: "Asia/Taipei",
           });
@@ -157,14 +157,68 @@ module.exports = {
               .join("\n"),
           });
         });
+
+        // {
+        // "lobby_id": 349168873,
+        // "lobby_name": "WS4 A88 VS A88",
+        // "match_time": "2024/11/02 00:00",
+        // "location": {"english": "Ws4_Golden LakesCustom", "chinese": "WS4_GOLDEN湖泊custom"},
+        // "teams": {
+        // "team1": {
+        // "players": [{
+        // "user_id": "7151715",
+        // "color": "<:color1:1283023694293106698>",
+        // "color_code": "1",
+        // "name": "AF Bot",
+        // "civilization": "蒙古",
+        // "rating": "1500",
+        // "rating_change": "-16",
+        // "bonus": ""}, {
+        // }, {}, {}], "bonus": false}, "team2": {"players": [{"user_id": "12091", "color": "<:color2:1283023692728766535>", "color_code": "2", "name": "TAG_A88", "civilization": "中國", "rating": "1513", "rating_change": "+17", "bonus": "🏆"}, {"user_id": "1080762", "color": "<:color4:1283023688446246943>", "color_code": "4", "name": "Mashirou", "civilization": "高棉", "rating": "1512", "rating_change": "+17", "bonus": "🏆"}, {"user_id": "11567102", "color": "<:color6:1283023684587753575>", "color_code": "6", "name": "被煎的波卡", "civilization": "緬甸", "rating": "1467", "rating_change": "+19", "bonus": "🏆"}, {"user_id": "224455", "color": "<:color8:1283023680573538369>", "color_code": "8", "name": "liang0312", "civilization": "印加", "rating": "1508", "rating_change": "+17", "bonus": "🏆"}], "bonus": true}}, "match_result": "隊伍 2 勝利"}
         // only keep first 4000 characters
-        const plaintext = JSON.stringify(match).slice(0, 4000);
-        const embedPlaintext = new EmbedBuilder().setDescription(plaintext);
-        return interaction.reply({
-          embeds: [matchEmbed],
-          // embeds: [matchEmbed, embedPlaintext],
-          // ephemeral: true,
+        const whoWin = match.teams.find(({ players }) =>
+          players.some(({ won }) => won)
+        )?.teamId;
+        const teamOrder = match.teams.map(({ teamId }) => teamId);
+        // const teamOrderIndex = teamOrder.indexOf(whoWin); // -1 if not found
+        const plainTeams = {};
+        match.teams.forEach(({ teamId, players }) => {
+          plainTeams[teamOrder.indexOf(teamId)] = {
+            bonus: whoWin ? (teamId === whoWin ? true : false) : false,
+            players: players.map((player) => ({
+              user_id: player.profileId,
+              color: colorEmojiMap[player.color],
+              color_code: player.color.toString(),
+              name: player.name,
+              civilization: player.civName,
+              rating: player.rating,
+              rating_change: player.ratingDiff,
+              bonus: player.won ? "🏆" : "",
+            })),
+          };
         });
+        const plaintext = {
+          lobby_id: match.matchId,
+          lobby_name: match.name,
+          // 2024/11/3 14:03:50
+          // transform to 2024/11/03 14:03
+          match_time: `${started.slice(0, 10)} ${started.slice(11, 16)}`,
+          location: {
+            english: match.map,
+            chinese: match.mapName,
+          },
+          teams: plainTeams,
+          match_result: whoWin
+            ? `隊伍 ${teamOrder.indexOf(whoWin) + 1} 勝利`
+            : "尚未決定",
+        };
+        const embedPlaintext = new EmbedBuilder().setDescription(plaintext);
+        interaction.reply({ embeds: [matchEmbed] });
+        interaction.followUp({
+          embeds: [matchEmbed, embedPlaintext],
+          ephemeral: true,
+        });
+        return;
       case "team":
         const team = await getTeam(teamName);
         const embed = new EmbedBuilder()
