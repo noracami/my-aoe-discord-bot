@@ -144,7 +144,8 @@ module.exports = {
               .join("\n"),
           });
         });
-        const plaintext = JSON.stringify(match, null, 2);
+        // only keep first 4000 characters
+        const plaintext = JSON.stringify(match).slice(0, 4000);
         const embedPlaintext = new EmbedBuilder().setDescription(plaintext);
         return interaction.reply({
           embeds: [matchEmbed, embedPlaintext],
