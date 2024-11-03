@@ -85,7 +85,7 @@ module.exports = {
         );
 
         if (match.finished !== null && match.finished > match.started) {
-          matchEmbed.setColor("GREEN").setDescription(
+          matchEmbed.setColor([0, 255, 0]).setDescription(
             `Started: \t${new Date(match.started).toLocaleString("zh", {
               hour12: false,
             })}\nFinished: \t${new Date(match.finished).toLocaleString("zh", {
@@ -93,7 +93,7 @@ module.exports = {
             })}`
           );
         } else {
-          matchEmbed.setColor("RED").setDescription(
+          matchEmbed.setColor([255, 0, 0]).setDescription(
             `Started: \t${new Date(match.started).toLocaleString("zh", {
               hour12: false,
             })}\nFinished: \tNot finished yet`
