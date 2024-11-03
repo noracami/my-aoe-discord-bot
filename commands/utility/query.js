@@ -80,18 +80,34 @@ module.exports = {
           );
         }
 
+        // const toParsedTime = (t, type = 'started') => {
+        //   const timestamp = new Date(t).getTime();
+        //   if (type === 'finished' && t < new Date().getTime()) {
+        //     return null;
+        //   } else {
+        //     return new Date(timestamp).toLocaleString("en-US", {
+        //       timeZone: "Asia/Taipei",
+        //       hour12: false,
+        //     });
+        //   }
+        // };
+
         const matchEmbed = new EmbedBuilder().setTitle(
           `Match: ${match.matchId}`
         );
-        // new Date(t).toLocaleString('en-US', {timeZone: "Asia/Taipei", hour12: false})
-        const started = new Date(match.started).toLocaleDateString("zh", {
-          hour12: false,
+        const started = new Date(
+          new Date(match.started).getTime()
+        ).toLocaleDateString("en-US", {
           timeZone: "Asia/Taipei",
+          hour12: false,
         });
 
         let finished = "Not finished yet";
+        console.log({ "match.finished": match.finished });
         if (match.finished !== null && match.finished > match.started) {
-          finished = new Date(match.finished).toLocaleDateString("zh", {
+          finished = new Date(
+            new Date(match.finished).getTime()
+          ).toLocaleDateString("en-US", {
             hour12: false,
             timeZone: "Asia/Taipei",
           });
