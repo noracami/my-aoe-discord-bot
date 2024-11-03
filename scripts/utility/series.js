@@ -13,12 +13,12 @@ module.exports = {
   async getSeries(team1, team2 = "", seriesType = "all") {
     const db = await mongoDB();
     const teams = db.collection("team");
-    const team1 = await teams.findOne({ name: team1 });
-    const team2 = (await teams.findOne({ name: team2 })) || "";
+    const teamOne = await teams.findOne({ name: team1 });
+    const teamTwo = (await teams.findOne({ name: team2 })) || "";
     const series = db.collection("series");
-    const queries = [team1];
-    if (team2) {
-      queries.push(team2);
+    const queries = [teamOne];
+    if (teamTwo) {
+      queries.push(teamTwo);
       queries.sort((a, b) => a.seed - b.seed);
     }
     const query = {};
