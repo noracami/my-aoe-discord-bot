@@ -197,6 +197,7 @@ module.exports = {
             })),
           };
         });
+        console.warn({ matchTime: started });
         const plaintext = {
           lobby_id: match.matchId,
           lobby_name: match.name,
@@ -212,10 +213,10 @@ module.exports = {
             ? `隊伍 ${teamOrder.indexOf(whoWin) + 1} 勝利`
             : "尚未決定",
         };
-        const embedPlaintext = new EmbedBuilder().setDescription(plaintext);
+        // const embedPlaintext = new EmbedBuilder().setDescription(plaintext);
         interaction.reply({ embeds: [matchEmbed] });
         interaction.followUp({
-          embeds: [matchEmbed, embedPlaintext],
+          content: JSON.stringify(plaintext),
           ephemeral: true,
         });
         return;
