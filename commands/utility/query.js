@@ -83,31 +83,28 @@ module.exports = {
         const matchEmbed = new EmbedBuilder().setTitle(
           `Match: ${match.matchId}`
         );
+        // new Date(t).toLocaleString('en-US', {timeZone: "Asia/Taipei", hour12: false})
+        const started = new Date(match.started).toLocaleDateString("zh", {
+          hour12: false,
+          timeZone: "Asia/Taipei",
+        });
 
+        let finished = "Not finished yet";
         if (match.finished !== null && match.finished > match.started) {
-          matchEmbed.setColor([0, 255, 0]).setDescription(
-            `Started: \t${new Date(match.started).toLocaleString("zh", {
-              hour12: false,
-            })}\nFinished: \t${new Date(match.finished).toLocaleString("zh", {
-              hour12: false,
-            })}`
-          );
+          finished = new Date(match.finished).toLocaleDateString("zh", {
+            hour12: false,
+            timeZone: "Asia/Taipei",
+          });
+          matchEmbed
+            .setColor([0, 255, 0])
+            .setDescription(`Started: \t${started}\nFinished: \t${finished}`);
         } else {
-          matchEmbed.setColor([255, 0, 0]).setDescription(
-            `Started: \t${new Date(match.started).toLocaleString("zh", {
-              hour12: false,
-            })}\nFinished: \tNot finished yet`
-          );
+          matchEmbed
+            .setColor([255, 0, 0])
+            .setDescription(`Started: \t${started}\nFinished: \t${finished}`);
         }
 
         matchEmbed
-          .setDescription(
-            `Started: \t${new Date(match.started).toLocaleString("zh", {
-              hour12: false,
-            })}\nFinished: \t${new Date(match.finished).toLocaleString("zh", {
-              hour12: false,
-            })}`
-          )
           .addFields({ name: "Name", value: match.name })
           .addFields({ name: "Map", value: match.mapName })
           .setThumbnail(match.mapImageUrl);
