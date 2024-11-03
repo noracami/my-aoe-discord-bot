@@ -97,17 +97,14 @@ module.exports = {
   async execute(interaction) {
     const teamName = interaction.options.getString("team");
     const team2Name = interaction.options.getString("team2");
-    const seriesType = interaction.options.getString("series_type");
+    const seriesType = interaction.options.getString("series_type") ?? "all";
     switch (interaction.options.getSubcommand()) {
       case "series":
-        const seriesEmbed = new EmbedBuilder().setTitle("Series");
-        seriesEmbed.addFields({ name: "team 1", value: teamName });
-        seriesEmbed.addFields({ name: "team 2", value: team2Name ?? "N/A" });
-        seriesEmbed.addFields({
-          name: "series type",
-          value: seriesType ?? "all",
-        });
-        seriesEmbed.addFields({ name: "Series", value: "Under development" });
+        const blueDiamond = "🔹";
+        const orangeDiamond = "🔸";
+        const seriesEmbed = new EmbedBuilder().setTitle(
+          `Series ${blueDiamond} ${teamName} v.s. ${orangeDiamond} ${team2Name}`
+        );
         const series = await getSeries(teamName, team2Name, seriesType);
         if (series.length === 0) {
           seriesEmbed.addFields({
@@ -127,14 +124,10 @@ module.exports = {
                 : s.matches.map((m) => `matchId: ${m.matchId}`).join("\n");
             seriesEmbed.addFields({
               name: s.seriesType,
-              value: `roster:\n${roster}\nmatches:\n${matches}`,
+              value: `Roster:\n${roster}\nmatches:\n${matches}`,
             });
           }
         }
-        seriesEmbed.addFields({
-          name: "Series",
-          value: JSON.stringify(series),
-        });
         return interaction.reply({
           embeds: [seriesEmbed],
           ephemeral: true,
