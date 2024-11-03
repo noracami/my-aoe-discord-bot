@@ -40,4 +40,34 @@ module.exports = {
     db.client.close();
     return seriesData;
   },
+  async putSeries(team1, team2, seriesType, matchNumber, matchId) {
+    const db = await mongoDB();
+    const teams = db.collection("team");
+    const teamOne = await teams.findOne({ name: team1 });
+    const teamTwo = await teams.findOne({ name: team2 });
+    const seriesCollection = db.collection("series");
+    const query = {
+      homeTeamId: teamOne._id,
+      guestTeamId: teamTwo._id,
+      seriesType,
+    };
+    if (teamOne.seed > teamTwo.seed) {
+      query.homeTeamId = teamTwo._id;
+      query.guestTeamId = teamOne._id;
+    }
+    const series = await seriesCollection.findOne(query);
+    if (!series) {
+      db.client.close();
+      return "Series not found";
+    }
+    if (series.matches.length === 0) {
+      series.matches = ["placeholder", undefined, undefined, undefined];
+    }
+    series.matches[matchNumber] = matchId;
+    await seriesCollection.updateOne(query, {
+      $set: { matches: series.matches },
+    });
+    db.client.close();
+    return "Series updated";
+  },
 };

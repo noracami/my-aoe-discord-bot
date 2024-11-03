@@ -74,6 +74,7 @@ const data = new SlashCommandBuilder()
         option
           .setName("team2")
           .setDescription("The team2 name")
+          .setRequired(true)
           .addChoices(teams.map(({ name }) => ({ name: name, value: name })))
       )
       .addStringOption((option) =>
