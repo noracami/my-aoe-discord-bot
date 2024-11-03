@@ -102,8 +102,11 @@ module.exports = {
       case "series":
         const seriesEmbed = new EmbedBuilder().setTitle("Series");
         seriesEmbed.addFields({ name: "team 1", value: teamName });
-        seriesEmbed.addFields({ name: "team 2", value: team2Name });
-        seriesEmbed.addFields({ name: "series type", value: seriesType });
+        seriesEmbed.addFields({ name: "team 2", value: team2Name ?? "N/A" });
+        seriesEmbed.addFields({
+          name: "series type",
+          value: seriesType ?? "all",
+        });
         seriesEmbed.addFields({ name: "Series", value: "Under development" });
         const series = await getSeries(teamName, team2Name, seriesType);
         seriesEmbed.addFields({

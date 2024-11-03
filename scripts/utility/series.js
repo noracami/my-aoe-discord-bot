@@ -10,11 +10,11 @@ async function mongoDB() {
 }
 
 module.exports = {
-  async getSeries(team1, team2 = "", seriesType = "all") {
+  async getSeries(team1, team2, seriesType) {
     const db = await mongoDB();
     const teams = db.collection("team");
     const teamOne = await teams.findOne({ name: team1 });
-    const teamTwo = (await teams.findOne({ name: team2 })) || "";
+    const teamTwo = (await teams.findOne({ name: team2 })) || null;
     const series = db.collection("series");
     const queries = [teamOne];
     if (teamTwo) {
