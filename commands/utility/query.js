@@ -148,8 +148,9 @@ module.exports = {
         const plaintext = JSON.stringify(match).slice(0, 4000);
         const embedPlaintext = new EmbedBuilder().setDescription(plaintext);
         return interaction.reply({
-          embeds: [matchEmbed, embedPlaintext],
-          ephemeral: true,
+          embeds: [matchEmbed],
+          // embeds: [matchEmbed, embedPlaintext],
+          // ephemeral: true,
         });
       case "team":
         const team = await getTeam(teamName);
