@@ -98,15 +98,15 @@ module.exports = {
             name: `Team ${teamId}`,
             value: players
               .map(
-                ({ name, civName, won }) =>
-                  `${won ? "👑" : ""} ${name} (${civName})`
+                ({ name, civName, color, won }) =>
+                  `${won ? "👑" : ""} :color${color}: ${name} (${civName})`
               )
               .join("\n"),
           });
         });
         return interaction.reply({
           embeds: [matchEmbed],
-          ephemeral: true,
+          // ephemeral: true,
         });
       case "team":
         const team = await getTeam(teamName);

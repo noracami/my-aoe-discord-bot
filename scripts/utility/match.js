@@ -21,7 +21,10 @@ module.exports = {
       .findOne({ matchId: parseInt(matchId) }, {}, { sort: { _id: -1 } });
 
     if (matchInMongo) {
-      if (matchInMongo.finished !== null) {
+      if (
+        matchInMongo.finished !== null &&
+        matchInMongo.finished > matchInMongo.started
+      ) {
         // found the completed match
         db.client.close();
         return matchInMongo;
