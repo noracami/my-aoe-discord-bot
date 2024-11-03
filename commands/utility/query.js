@@ -1,7 +1,8 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, Colors } = require("discord.js");
 const { teams } = require("../../assets/data/teams.json");
 const { getTeam } = require("../../scripts/utility/teams");
 const { getMatch } = require("../../scripts/utility/match");
+const { getSeries } = require("../../scripts/utility/series");
 const { EmbedBuilder } = require("discord.js");
 
 const data = new SlashCommandBuilder()
@@ -57,6 +58,37 @@ const data = new SlashCommandBuilder()
             }))
           )
       )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("series")
+      .setDescription("Series details for a given team, team2 and series type")
+      .addStringOption((option) =>
+        option
+          .setName("team")
+          .setDescription("The team name")
+          .setRequired(true)
+          .addChoices(teams.map(({ name }) => ({ name: name, value: name })))
+      )
+      .addStringOption((option) =>
+        option
+          .setName("team2")
+          .setDescription("The team2 name")
+          .addChoices(teams.map(({ name }) => ({ name: name, value: name })))
+      )
+      .addStringOption((option) =>
+        option
+          .setName("series_type")
+          .setDescription("The series type")
+          .addChoices([
+            { name: "all", value: "all" },
+            { name: "２ｖ２大師賽", value: "Master 2v2" },
+            { name: "３ｖ３大師賽", value: "Master 3v3" },
+            { name: "４ｖ４大師賽", value: "Master 4v4" },
+            { name: "３ｖ３萌新賽", value: "Newbie 3v3" },
+            { name: "４ｖ４萌新賽", value: "Newbie 4v4" },
+          ])
+      )
   );
 
 module.exports = {
@@ -64,7 +96,21 @@ module.exports = {
   data: data,
   async execute(interaction) {
     const teamName = interaction.options.getString("team");
+    const team2Name = interaction.options.getString("team2");
+    const seriesType = interaction.options.getString("series_type");
     switch (interaction.options.getSubcommand()) {
+      case "series":
+        const seriesEmbed = new EmbedBuilder().setTitle("Series");
+        seriesEmbed.addFields({ name: "team 1", value: teamName });
+        seriesEmbed.addFields({ name: "team 2", value: team2Name });
+        seriesEmbed.addFields({ name: "series type", value: seriesType });
+        seriesEmbed.addFields({ name: "Series", value: "Under development" });
+        const series = await getSeries(teamName, team2Name, seriesType);
+        series.addFields({ name: "Series", value: JSON.stringify(series) });
+        return interaction.reply({
+          embeds: [seriesEmbed],
+          ephemeral: true,
+        });
       case "match":
         const matchId = interaction.options.getString("match_id");
         const profileId = interaction.options.getString("profile_id");
@@ -79,18 +125,6 @@ module.exports = {
             `Match: (${matchId}) not found. Please provide the profile id`
           );
         }
-
-        // const toParsedTime = (t, type = 'started') => {
-        //   const timestamp = new Date(t).getTime();
-        //   if (type === 'finished' && t < new Date().getTime()) {
-        //     return null;
-        //   } else {
-        //     return new Date(timestamp).toLocaleString("en-US", {
-        //       timeZone: "Asia/Taipei",
-        //       hour12: false,
-        //     });
-        //   }
-        // };
 
         const matchEmbed = new EmbedBuilder().setTitle(
           `Match: ${match.matchId}`
@@ -112,11 +146,11 @@ module.exports = {
             timeZone: "Asia/Taipei",
           });
           matchEmbed
-            .setColor([0, 255, 0])
+            .setColor(Colors.Green)
             .setDescription(`Started: \t${started}\nFinished: \t${finished}`);
         } else {
           matchEmbed
-            .setColor([255, 0, 0])
+            .setColor(Colors.Red)
             .setDescription(`Started: \t${started}\nFinished: \t${finished}`);
         }
 
@@ -126,7 +160,7 @@ module.exports = {
           .setThumbnail(match.mapImageUrl);
 
         const colorEmojiMap = {
-          // :color1:  <:color1:1283023694293106698>
+          // :color1: <:color1:1283023694293106698>
           // :color2: <:color2:1283023692728766535>
           // :color3: <:color3:1283023690744729724>
           // :color4: <:color4:1283023688446246943>
@@ -158,24 +192,6 @@ module.exports = {
           });
         });
 
-        // {
-        // "lobby_id": 349168873,
-        // "lobby_name": "WS4 A88 VS A88",
-        // "match_time": "2024/11/02 00:00",
-        // "location": {"english": "Ws4_Golden LakesCustom", "chinese": "WS4_GOLDEN湖泊custom"},
-        // "teams": {
-        // "team1": {
-        // "players": [{
-        // "user_id": "7151715",
-        // "color": "<:color1:1283023694293106698>",
-        // "color_code": "1",
-        // "name": "AF Bot",
-        // "civilization": "蒙古",
-        // "rating": "1500",
-        // "rating_change": "-16",
-        // "bonus": ""}, {
-        // }, {}, {}], "bonus": false}, "team2": {"players": [{"user_id": "12091", "color": "<:color2:1283023692728766535>", "color_code": "2", "name": "TAG_A88", "civilization": "中國", "rating": "1513", "rating_change": "+17", "bonus": "🏆"}, {"user_id": "1080762", "color": "<:color4:1283023688446246943>", "color_code": "4", "name": "Mashirou", "civilization": "高棉", "rating": "1512", "rating_change": "+17", "bonus": "🏆"}, {"user_id": "11567102", "color": "<:color6:1283023684587753575>", "color_code": "6", "name": "被煎的波卡", "civilization": "緬甸", "rating": "1467", "rating_change": "+19", "bonus": "🏆"}, {"user_id": "224455", "color": "<:color8:1283023680573538369>", "color_code": "8", "name": "liang0312", "civilization": "印加", "rating": "1508", "rating_change": "+17", "bonus": "🏆"}], "bonus": true}}, "match_result": "隊伍 2 勝利"}
-        // only keep first 4000 characters
         const whoWin = match.teams.find(({ players }) =>
           players.some(({ won }) => won)
         )?.teamId;
@@ -201,9 +217,7 @@ module.exports = {
         const plaintext = {
           lobby_id: match.matchId,
           lobby_name: match.name,
-          // 2024/11/3 14:03:50
-          // transform to 2024/11/03 14:03
-          match_time: `${started.slice(0, 10)} ${started.slice(11, 16)}`,
+          match_time: started,
           location: {
             english: match.map,
             chinese: match.mapName,
