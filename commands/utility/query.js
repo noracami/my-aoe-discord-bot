@@ -106,7 +106,10 @@ module.exports = {
         seriesEmbed.addFields({ name: "series type", value: seriesType });
         seriesEmbed.addFields({ name: "Series", value: "Under development" });
         const series = await getSeries(teamName, team2Name, seriesType);
-        series.addFields({ name: "Series", value: JSON.stringify(series) });
+        seriesEmbed.addFields({
+          name: "Series",
+          value: JSON.stringify(series),
+        });
         return interaction.reply({
           embeds: [seriesEmbed],
           ephemeral: true,
