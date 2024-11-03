@@ -97,7 +97,7 @@ module.exports = {
         );
         const started = new Date(
           new Date(match.started).getTime()
-        ).toLocaleTimeString("zh", {
+        ).toLocaleString("zh", {
           timeZone: "Asia/Taipei",
           hour12: false,
         });
@@ -107,7 +107,7 @@ module.exports = {
         if (match.finished !== null && match.finished > match.started) {
           finished = new Date(
             new Date(match.finished).getTime()
-          ).toLocaleTimeString("zh", {
+          ).toLocaleString("zh", {
             hour12: false,
             timeZone: "Asia/Taipei",
           });
@@ -213,13 +213,13 @@ module.exports = {
             ? `隊伍 ${teamOrder.indexOf(whoWin) + 1} 勝利`
             : "尚未決定",
         };
-        // const embedPlaintext = new EmbedBuilder().setDescription(plaintext);
-        interaction.reply({ embeds: [matchEmbed] });
-        interaction.followUp({
-          content: JSON.stringify(plaintext),
-          ephemeral: true,
+        const plaintextEmbed = new EmbedBuilder().setDescription(
+          JSON.stringify(plaintext)
+        );
+        return interaction.reply({
+          embeds: [matchEmbed, plaintextEmbed],
+          // ephemeral: true,
         });
-        return;
       case "team":
         const team = await getTeam(teamName);
         const embed = new EmbedBuilder()
