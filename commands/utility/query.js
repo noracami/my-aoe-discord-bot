@@ -109,6 +109,28 @@ module.exports = {
         });
         seriesEmbed.addFields({ name: "Series", value: "Under development" });
         const series = await getSeries(teamName, team2Name, seriesType);
+        if (series.length === 0) {
+          seriesEmbed.addFields({
+            name: "Series",
+            value: "No series found",
+          });
+        } else {
+          for (const s of series) {
+            const roster = `${s.homeTeamLineup
+              .map((p) => p.nickname.at(0))
+              .join("\n")}\nv.s.\n${s.guestTeamLineup
+              .map((p) => p.nickname)
+              .join("\n")}`;
+            const matches =
+              s.matches.length === 0
+                ? "To be determined"
+                : s.matches.map((m) => `matchId: ${m.matchId}`).join("\n");
+            seriesEmbed.addFields({
+              name: s.seriesType,
+              value: `roster:\n${roster}\nmatches:\n${matches}`,
+            });
+          }
+        }
         seriesEmbed.addFields({
           name: "Series",
           value: JSON.stringify(series),
