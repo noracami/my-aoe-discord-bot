@@ -174,7 +174,7 @@ module.exports = {
           );
 
           const title = `${seriesType[0]} - ${team1[0]} v.s. ${team2[0]} ${matchNumber[0]}`;
-          await i.followUp({
+          await i.editReply({
             content: `${title}，房號: ${matchId} 已更新。`,
           });
 
@@ -284,11 +284,11 @@ module.exports = {
           await i.followUp({
             embeds: [matchEmbed, plaintextEmbed],
             content: "Match details",
-            ephemeral: true,
+            // ephemeral: true,
           });
 
-          // // delete original message
-          await i.deleteReply();
+          // // // delete original message
+          // await i.deleteReply();
         }
       }
     });
