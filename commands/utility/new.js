@@ -97,7 +97,7 @@ module.exports = {
     const response = await interaction.reply({
       content: "選擇隊伍、賽制、第幾局和輸入房號",
       components: [rowGroupA, rowGroupB, rowSeries, rowMatchNumber, rowSubmit],
-      ephemeral: true,
+      // ephemeral: true,
     });
 
     const collector = response.createMessageComponentCollector({
@@ -176,6 +176,30 @@ module.exports = {
           const title = `${seriesType[0]} - ${team1[0]} v.s. ${team2[0]} ${matchNumber[0]}`;
           await i.editReply({
             content: `${title}，房號: ${matchId} 已更新。`,
+            components: [
+              new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                  .setCustomId("t1")
+                  .setLabel(team1[0])
+                  .setStyle(ButtonStyle.Success)
+                  .setDisabled(true),
+                new ButtonBuilder()
+                  .setCustomId("t2")
+                  .setLabel(team2[0])
+                  .setStyle(ButtonStyle.Success)
+                  .setDisabled(true),
+                new ButtonBuilder()
+                  .setCustomId("st_mn")
+                  .setLabel(`${seriesType[0]} - ${matchNumber[0]}`)
+                  .setStyle(ButtonStyle.Success)
+                  .setDisabled(true),
+                new ButtonBuilder()
+                  .setCustomId("match_id")
+                  .setLabel(`房號: ${matchId}`)
+                  .setStyle(ButtonStyle.Success)
+                  .setDisabled(true)
+              ),
+            ],
           });
 
           // show the match details
