@@ -73,11 +73,12 @@ module.exports = {
 
     const u = {
       tier: series.homeTeamLineup[0].tier,
+      teamId: series.homeTeamId,
     };
-    u.profileId = await db
-      .collection("team")
-      .findOne({ name: teamOne.name })
-      .then((t) => t.lineup.find((p) => p.tier === u.tier).profileId);
+    u.team = await db.collection("team").findOne({ _id: u.teamId });
+    u.profileId = u.team.lineup.find((p) => p.tier === u.tier).profile_id;
+
+    console.log(u);
 
     db.client.close();
     return {

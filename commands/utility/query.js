@@ -138,7 +138,7 @@ module.exports = {
         }
         return interaction.reply({
           embeds: [seriesEmbed],
-          ephemeral: true,
+          // ephemeral: true,
         });
       case "match":
         const matchId = interaction.options.getString("match_id");
