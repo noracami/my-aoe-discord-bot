@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, Colors } = require("discord.js");
+const { SlashCommandBuilder, Colors, codeBlock } = require("discord.js");
 const { teams } = require("../../assets/data/teams.json");
 const { getTeam } = require("../../scripts/utility/teams");
 const { getMatch } = require("../../scripts/utility/match");
@@ -256,11 +256,12 @@ module.exports = {
             ? `隊伍 ${teamOrder.indexOf(whoWin) + 1} 勝利`
             : "尚未決定",
         };
-        const plaintextEmbed = new EmbedBuilder().setDescription(
-          JSON.stringify(plaintext)
-        );
-        return interaction.reply({
-          embeds: [matchEmbed, plaintextEmbed],
+        const plaintextCodeBlock = codeBlock("json", JSON.stringify(plaintext));
+        return await interaction.reply({
+          embeds: [
+            matchEmbed,
+            new EmbedBuilder().setDescription(plaintextCodeBlock),
+          ],
           // ephemeral: true,
         });
       case "team":

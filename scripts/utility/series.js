@@ -58,7 +58,10 @@ module.exports = {
     const series = await seriesCollection.findOne(query);
     if (!series) {
       db.client.close();
-      return "Series not found";
+      return {
+        ok: false,
+        message: "Series not found",
+      };
     }
     if (series.matches.length === 0) {
       series.matches = ["placeholder", undefined, undefined, undefined];
@@ -67,7 +70,20 @@ module.exports = {
     await seriesCollection.updateOne(query, {
       $set: { matches: series.matches },
     });
+
+    const u = {
+      tier: series.homeTeamLineup[0].tier,
+    };
+    u.profileId = await db
+      .collection("team")
+      .findOne({ name: teamOne.name })
+      .then((t) => t.lineup.find((p) => p.tier === u.tier).profileId);
+
     db.client.close();
-    return "Series updated";
+    return {
+      ok: true,
+      message: "Match ID added to series",
+      profileIdToFetchMatchAPI: u.profileId,
+    };
   },
 };

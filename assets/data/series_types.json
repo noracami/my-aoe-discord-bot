@@ -1,0 +1,9 @@
+{
+  "series_types": [
+    { "label": "２ｖ２大師賽", "value": "Master 2v2" },
+    { "label": "３ｖ３大師賽", "value": "Master 3v3" },
+    { "label": "４ｖ４大師賽", "value": "Master 4v4" },
+    { "label": "３ｖ３萌新賽", "value": "Newbie 3v3" },
+    { "label": "４ｖ４萌新賽", "value": "Newbie 4v4" }
+  ]
+}
